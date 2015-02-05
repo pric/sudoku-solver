@@ -57,7 +57,9 @@ public class SudokuSolver {
 	}
 	
 	public void isValid(byte x, byte y, byte k){
-		
+		if(grid[x][y] == 0){
+			
+		}
 	}
 	
 	public void solveSudoku(){
