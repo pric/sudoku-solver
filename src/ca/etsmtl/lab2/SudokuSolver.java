@@ -5,9 +5,11 @@ import java.io.FileInputStream;
 
 public class SudokuSolver {
 	private byte[][] grid;
+	private boolean hasSolution;
 	
 	public SudokuSolver() {
 		this.grid = new byte[9][9];
+		this.hasSolution = false;
 	}
 	
 	public void readFile(String path) {
@@ -31,7 +33,10 @@ public class SudokuSolver {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+	}
+	
+	private boolean hasSolution() {
+		return this.hasSolution;
 	}
 	
 	public void printGrid(){
@@ -56,19 +61,67 @@ public class SudokuSolver {
 		}
 	}
 	
-	public void isValid(byte x, byte y, byte k){
-		if(grid[x][y] == 0){
-			
+	public boolean isValid(int line, int column, int k){
+		if(grid[line][column] == 0){	
+			for (int i = 0; i <= 8; i++) {
+				if(grid[line][i] == k){
+					return false;
+				}
+				if(grid[i][column] == k){
+					return false;
+				}
+				if(grid[(line/3) * 3 + i/3][(column/3) * 3 + i%3] == k){
+					return false;
+				}
+			}
+		}else{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public void solveSudoku(int line, int column){
+		if(grid[line][column] != 0){
+			if(column<8){
+				solveSudoku(line, column+1);
+			}else if(line<8){
+				solveSudoku(line+1, 0);
+			}
+		}else{
+			for(int i = 1; i<10; i++){
+				if(this.isValid(line, column, i)){
+					this.grid[line][column] = (byte)i;
+					if(column<8){
+						solveSudoku(line, column+1);
+					}else if(line<8){
+						solveSudoku(line+1, 0);
+					}else{
+						hasSolution = true;
+					}
+				}
+				if(!hasSolution){
+					this.grid[line][column] = 0;
+				}
+			}
 		}
 	}
 	
-	public void solveSudoku(){
-		
-	}
-	
 	public static void main(String[] args) {
+		CalculateTime ct = new CalculateTime();
 		SudokuSolver ss = new SudokuSolver();
+		
+		ct.startTimer();
 		ss.readFile("sudoku.txt");
-		ss.printGrid();
+		
+		ss.solveSudoku(0,0);
+		ct.endTimer();
+		
+		if(ss.hasSolution()){
+			System.out.println("Solution found:");
+			ss.printGrid();
+		}else{
+			System.out.println("No solution found");
+		}
 	}
 }
