@@ -87,6 +87,8 @@ public class SudokuSolver {
 				solveSudoku(line, column+1);
 			}else if(line<8){
 				solveSudoku(line+1, 0);
+			}else{
+				hasSolution = true;
 			}
 		}else{
 			for(int i = 1; i<10; i++){
@@ -112,7 +114,7 @@ public class SudokuSolver {
 		SudokuSolver ss = new SudokuSolver();
 		
 		ct.startTimer();
-		ss.readFile("sudoku.txt");
+		ss.readFile("sudoku4.txt");
 		
 		ss.solveSudoku(0,0);
 		ct.endTimer();
